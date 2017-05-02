@@ -1,2 +1,1 @@
-# TripAdvisor-Rankings
-Capstone Project for General Assembly's Data Science Immersive Course
+# How Can Hotels Predict and Improve Their Popularity Ranking on TripAdvisor?
