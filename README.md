@@ -6,7 +6,7 @@ For my Capstone Project I chose to examine hotel popularity rankings on the trav
 
 What are the popularity rankings I am talking about?  On the partial screenshot of the New York City hotel listings page below, you can see two hotels with their Traveler Popularity Rankings.  There is the top hotel, named 414 Hotel, and a different hotel that is shown here because TripAdvisor sells sponsored listings that allow hotels to be shown at the top of the list.
 
-![alt text](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/ListingsScreenshot.png "Listings Screenshot")
+![Listings Screenshot](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/ListingsScreenshot.png)
 
 There are other ways that travelers can sort hotels, but the Traveler Ranked sort order is the default sort order.  As you can imagine, hotels are interested in being ranked high, so that there is a higher likelihood that travelers will see them when they look for hotels and choose to book a stay at their property.
 
@@ -36,22 +36,22 @@ I geocoded all hotel addresses using Google Maps API (with the help of the Geoco
 
 Before building my predictive models, I undertook exploratory data analysis to see if I could uncover any evidence of a relationship between the rank of a hotel and its other attributes.  As you can see in the box plot below, the main relationship that I uncovered is that hotels with higher star ratings are more likely to have better popularity rankings.  This surprised me somewhat, as this suggests that in rating hotels, travelers at least in the NYC market prioritize amenities, luxury and comfort over value.
 
-![alt text](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/StarRatingBoxPlot.jpg "Star Rating Box Plot")
+![Star Rating Box Plot](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/StarRatingBoxPlot.jpg)
 
 But what also stood out here is the presence of outliers (particularly at the top of the rankings) and I decided to study these outliers individually to see if I could formulate any additional hypotheses.  After browsing hotel reviews, the top hotels that stood out among their class-rating peers appeared to be small boutique hotels that offer unique and welcoming experience.  It is possible then that those are important features that can drive a hotel to the top of the rankings and should be incorporated in the model.
 
 But then I also examined the distribution of room price ranges within each star rating class.  As shown in the plot below, the hotels that out-performed their class-rating peers with their rank are the same hotels that charge more for the rooms relative to the other hotels in their class.  This suggests that those hotels perform so well not necessarily because of offering a warm and welcoming experience to their guests, but perhaps because they offer more amenities or services that put them on par with higher-class hotels.
 
-![alt text](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/PriceRangesByClass.jpg "Plot of Price Ranges by Class")
+![Plot of Price Ranges by Class](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/PriceRangesByClass.jpg)
 
 Another hypothesis that I explored is the association between hotel's location and its ranking.  It is likely that a hotel will be rated highly by its guests not just because of what the hotel itself offers, but because of where it is situated.  But after plotting all hotels on the map of Manhattan (using QGIS open-source application), I did not notice this type of relationship.
 
-![alt text](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/map_001_last.png "Manhattan hotel map")
+![Manhattan hotel map](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/map_001_last.png)
 
 The highest-ranked hotel (1-100), marked in red on this map, exhibit a very similar spatial distribution to hotels 101-200 (yellow dots), 201-300 (purple), and 301-440 (green).  Given these findings, and given that Manhattan is so compact and it is easy to get around from place to place, I did not investigate the geospatial question any further.
 
 Lastly, I explored the temporal dimension of hotel rankings by examining if the ratings left by guests vary over time, which would suggest that hotels undertake efforts to improve their service/customer experience.  For this, I plotted average monthly ratings of all hotels that had at least three years of review data.  The story I uncovered was that hotels' ratings do not increase or decrease dramatically over time.  The three examples shown below indicate that hotel's ranking is largely a function of time-invariant hotel attributes.
 
-![alt text](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/RatingsOverTime.jpg "Quality of Reviews Over Time")
+![Quality of Reviews Over Time](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/RatingsOverTime.jpg)
 
 ## Modeling
