@@ -52,6 +52,6 @@ The highest-ranked hotel (1-100), marked in red on this map, exhibit a very simi
 
 Lastly, I explored the temporal dimension of hotel rankings by examining if the ratings left by guests vary over time, which would suggest that hotels undertake efforts to improve their service/customer experience.  For this, I plotted average monthly ratings of all hotels that had at least three years of review data.  The story I uncovered was that hotels' ratings do not increase or decrease dramatically over time.  The three examples shown below indicate that hotel's ranking is largely a function of time-invariant hotel attributes.
 
-![Quality of Reviews Over Time](https://github.com/sasha-kap/TripAdvisor-Rankings/tree/master/images/RatingsOverTime.jpg)
+![Quality of Reviews Over Time](./images/RatingsOverTime.jpg)
 
 ## Modeling
