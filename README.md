@@ -50,8 +50,64 @@ Another hypothesis that I explored is the association between hotel's location a
 
 The highest-ranked hotel (1-100), marked in red on this map, exhibit a very similar spatial distribution to hotels 101-200 (yellow dots), 201-300 (purple), and 301-440 (green).  Given these findings, and given that Manhattan is so compact and it is easy to get around from place to place, I did not investigate the geospatial question any further.
 
-Lastly, I explored the temporal dimension of hotel rankings by examining if the ratings left by guests vary over time, which would suggest that hotels undertake efforts to improve their service/customer experience.  For this, I plotted average monthly ratings of all hotels that had at least three years of review data.  The story I uncovered was that hotels' ratings do not increase or decrease dramatically over time.  The three examples shown below indicate that hotel's ranking is largely a function of time-invariant hotel attributes.
+Lastly, I explored the temporal dimension of hotel rankings by examining if the ratings left by guests vary over time, which would suggest that hotels undertake efforts to improve their service/customer experience and their rankings may change as a result of those efforts.  For this, I plotted average monthly ratings of all hotels that had at least three years of review data.  The story I uncovered was that hotels' ratings do not increase or decrease dramatically over time.  The three examples shown below indicate that hotel's ranking is largely a function of time-invariant hotel attributes.
 
 ![Quality of Reviews Over Time](./images/RatingsOverTime.jpg)
 
 ## Modeling
+
+Rather than working with a small dataset of 440 hotels, I converted it into a much larger dataset where each row contains a unique pairing of two hotels and all of the features of those two hotels.  This means that I created 440-choose-2 combinations, or 96,580 pairings.  For each pairing I added a 1/0 classification label indicating whether the first or second hotel in the pairing was ranked higher.
+
+Based on the EDA described above, I chose the following features as my predictors:
+- 9 hotel star rating dummy variables (1, 1.5, ..., 5)
+- 10 amenities dummy variables (WiFi, Room Service, Restaurant, Bar/Lounge, Gym, Spa, Breakfast, Pool, Internet, Parking)
+- number of rooms in hotel
+- low and high ends of hotel's price range
+- 31 zipcode dummy variables
+
+There was a total of 106 predictors, or 53 per hotel in each pairing.
+
+I chose a 2/3 - 1/3 train-test split for the models.
+
+The results of the classification models, all of which used hyperparameter grid search, are shown below:
+
+Baseline (Test data): 50.44%
+
+| Model                     | Best Model CV | Full Train Score | Test Score |
+|---------------------------|---------------|------------------|------------|
+| Logistic Regression       | 76.02%        | 76.19%           | 76.10%     |
+| Stochastic Grad Descent   | 75.96%        | 76.08%           | 75.89%     |
+| Random Forest             | 89.74%        | 97.44%           | 90.10%     |
+| XGBoost                   | 96.24%        | 99.04%           | 96.72%     |
+
+
+| Model                     | Precision | Recall | F-1   |
+|---------------------------|-----------|--------|-------|
+| Logistic Regression       | 0.76      | 0.75   | 0.76  |
+| Stochastic Grad Descent   | 0.76      | 0.74   | 0.75  |
+| Random Forest             | 0.90      | 0.90   | 0.90  |
+| XGBoost                   | 0.97      | 0.97   | 0.97  |
+
+XGBoost clearly provides the best results, so I used its output to derive predicted ranks from pairwise comparisons.  I implemented this by taking each hotel and counting hotels predicted to be ranked lower than that hotel in pairwise comparisons.  Then I sorted all hotels by that count in descending order and assigned ranks from top to bottom.  I used the Pandas DataFrame Rank method to assign ranks, which assigns equal ranks to rows with equal values (equal to the average of the ranks of those values, e.g., two hotels tied for 8th would both be given the rank of 8.5).
+
+The plot below compares actual and predicted ranks in the test data.  The Spearman Rank-Order correlation coefficient is 0.9862.
+
+![Actual vs. Predicted Ranks](./images/rank_orig_vs_pred_TEST.png)
+
+## Review Text Topic Modeling
+
+While I was able to achieve high accuracy of rank prediction with only hotel-level features, I felt I could gain additional insight or at least corroborate my findings by analyzing the reviews left by travelers.  For this I used the Latent Dirichlet Allocation (LDA) statistical model to identify topics discussed in reviews of hotels in different tiers of rankings.  Topic modeling is a text-mining tool for discovering abstract "topics" that occur in a collection of documents.  Topics produced by topic modeling are clusters of similar words (e.g., a document about dogs may have a cluster/topic of "dog" and "bone").  The tiers I chose were similar to those used in geospatial analysis above: 1-100, 101-200, 201-300, and 301-400.
+
+My preprocessing steps here included removing all punctuation from review text, changing all text to lowercase, and removing stopwords (e.g., however, somehow, perhaps) provided in Scikit-Learn's feature extraction.text class.  After some test runs, I also removed all words appearing more than 2,500 times across all reviews in one tier of hotels as those words were too common and appeared in all resulting topics.
+
+I used the PyLDAvis package to visualize the topics.  As you can see below, the results are consistent with the EDA and modeling results above.  Reviews of top-tier hotels discuss luxury-related topics, while reviews of bottom-tier hotels discuss basic expectations of hotels, including cleanliness and lighting.
+
+![Top Tier Review Topic](./images/TopTierTopicOne.jpg)
+
+![Bottom Tier Review Topic](./images/BottomTierTopicThree.jpg)
+
+## Conclusion
+
+The key takeaway from this modeling project is that, at least in the NYC market, price/luxury is the strongest predictor of hotel's popularity ranking on TripAdvisor.  Hotels can use these results, including review topics, to help them decide which amenities/features to offer to guests, or whether it is worth making those types of investments at all over buying sponsored listings on TripAdvisor.
+
+Future iterations of this data product may incorporate data from other cities and historical ranking data for hotels, such that it becomes more clear whether NYC is a special market and how much time a hotel can expect to hold a certain place in the rankings or to move up to the top tier.
